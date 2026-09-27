@@ -1,18 +1,17 @@
-# Publica la web en GitHub Pages (Settings → Pages → Source: GitHub Actions).
-name: Deploy
+# CI en cada push y PR; publicación en GitHub Pages desde la rama por defecto del repositorio.
+# Requisito único: Settings → Pages → Source: GitHub Actions.
+name: CI y despliegue
 
 on:
   push:
-    branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -27,14 +26,18 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build:pages
-      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
         with:
           path: dist
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

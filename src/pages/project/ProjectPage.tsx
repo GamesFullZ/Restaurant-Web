@@ -31,7 +31,7 @@ const QUALITY = [
   { n: '97+', l: 'Rendimiento Lighthouse en escritorio, en las 6 páginas públicas' },
   { n: '100', l: 'Accesibilidad, buenas prácticas y SEO en Lighthouse' },
   { n: '0', l: 'Violaciones axe en 16 rutas, a 390 y 1440 px' },
-  { n: '35', l: 'Pruebas automáticas: 28 de reglas de negocio y 7 flujos E2E' },
+  { n: '61', l: 'Pruebas automáticas: 28 de reglas de negocio y 33 E2E con los criterios de aceptación' },
 ];
 
 const STACK = ['React 19', 'TypeScript', 'Vite', 'React Router', 'Three.js', 'GSAP + ScrollTrigger', 'Lenis', 'View Transitions', 'Vitest', 'Playwright', 'IndexedDB', 'CSS a mano (sin framework)'];

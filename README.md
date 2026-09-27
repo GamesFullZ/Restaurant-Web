@@ -66,7 +66,7 @@ Medido sobre el build de producción:
 | Lighthouse · Accesibilidad / Buenas prácticas / SEO | **100 / 100 / 100** |
 | CLS | 0 en todas las páginas |
 | axe-core | 0 violaciones en 16 rutas, a 390 y 1440 px |
-| Pruebas | 28 unitarias (reglas de negocio) + 7 flujos E2E (escritorio y móvil) |
+| Pruebas | 28 unitarias (reglas de negocio) + 33 E2E: flujos principales y los criterios de aceptación de `docs/08` |
 
 **Cómo se logra**
 - three.js (140 KB gzip) se descarga solo tras la primera interacción. Antes, el hero muestra un render WebP de 60 KB generado desde la misma escena, así que el paso a 3D no se nota.
@@ -95,8 +95,10 @@ node scripts/readme-shots.mjs   # regenera estas capturas (tras npm run build)
 
 ## Publicar
 
-- **GitHub Pages:** el workflow `.github/workflows/deploy.yml` publica al hacer push a `main`. Hay que activar *Settings → Pages → Source: GitHub Actions*. La URL queda en `https://<usuario>.github.io/Restaurant-Web/`.
-- **Vercel o Netlify:** importa el repo con el comando `npm run build` y el directorio `dist`. `vercel.json` y `public/_redirects` ya incluyen el fallback de SPA.
+- **GitHub Pages (automático):** el workflow `.github/workflows/deploy.yml` corre pruebas y build en cada push y publica cuando el push llega a la rama por defecto del repositorio. Solo hay que activar una vez *Settings → Pages → Source: GitHub Actions*. La URL queda en `https://<usuario>.github.io/Restaurant-Web/`.
+- **Vercel o Netlify:** importa el repo con el comando `npm run build` y el directorio `dist`. `vercel.json` y `public/_redirects` ya incluyen el fallback de SPA. En Netlify también puedes arrastrar la carpeta `dist` a *app.netlify.com/drop*.
+- **Hosting con Apache (Hostinger, cPanel…):** sube el contenido de `dist` a `public_html`. El `.htaccess` incluido hace que las rutas funcionen al recargar.
+- **Dentro de una subcarpeta de tu portafolio:** usa `npm run build:hash` y sube `dist-hash/` a cualquier carpeta; no necesita configurar el servidor.
 - **Dominio propio:** define `VITE_SITE_URL=https://tu-dominio/` al construir para que `og:image` y `og:url` apunten ahí.
 
 ## Fotografía de platillos
