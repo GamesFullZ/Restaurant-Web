@@ -187,6 +187,14 @@ export const FEATURED_RULE: Record<string, Tag> = {
   'tostada-de-atun': 'Recomendado',
 };
 
+/** Datos del caso de estudio (portafolio). Cambia `author` por tu nombre si lo prefieres. */
+export const PORTFOLIO = {
+  author: 'GamesFullZ',
+  role: 'Diseño UX/UI y desarrollo front-end',
+  year: 2026,
+  repo: 'https://github.com/GamesFullZ/Restaurant-Web',
+};
+
 export const DEMO = {
   code: 'MESA-4F7K',
   phone: '81 1234 5678',

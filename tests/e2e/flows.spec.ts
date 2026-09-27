@@ -109,10 +109,17 @@ test('admin: login, dashboard y bloqueo de acceso sin sesión', async ({ page })
 });
 
 test('sin desbordamiento horizontal en móvil @mobile', async ({ page }) => {
-  for (const path of ['/', '/menu', '/menu/pato-en-adobo', '/reservar?personas=2&horario=19:00', '/mis-reservas', '/nada']) {
+  for (const path of ['/', '/menu', '/menu/pato-en-adobo', '/reservar?personas=2&horario=19:00', '/mis-reservas', '/proyecto', '/nada']) {
     await page.goto(path);
     await page.waitForTimeout(600);
     const [sw, cw] = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
     expect(sw, path).toBeLessThanOrEqual(cw);
   }
+});
+
+test('caso de estudio enlaza a las demos', async ({ page }) => {
+  await page.goto('/proyecto');
+  await expect(page.locator('h1')).toContainText(/reservar/i);
+  await page.getByRole('link', { name: /Panel de administración/ }).click();
+  await page.waitForURL('**/admin/login');
 });

@@ -3,6 +3,25 @@ import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
 import type { Plugin } from 'vite';
 
+/**
+ * Metadatos con URL absoluta (og:image, og:url). La URL pública sale de
+ * VITE_SITE_URL; por defecto, la de GitHub Pages del repositorio.
+ */
+function socialMeta(): Plugin {
+  const site = (process.env.VITE_SITE_URL ?? 'https://gamesfullz.github.io/Restaurant-Web/').replace(/\/?$/, '/');
+  return {
+    name: 'mesa-social-meta',
+    apply: 'build',
+    transformIndexHtml: () => [
+      { tag: 'meta', attrs: { property: 'og:url', content: site }, injectTo: 'head' },
+      { tag: 'meta', attrs: { property: 'og:image', content: `${site}og.jpg` }, injectTo: 'head' },
+      { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' }, injectTo: 'head' },
+      { tag: 'meta', attrs: { property: 'og:image:height', content: '630' }, injectTo: 'head' },
+      { tag: 'meta', attrs: { name: 'twitter:image', content: `${site}og.jpg` }, injectTo: 'head' },
+    ],
+  };
+}
+
 /** Precarga las dos fuentes que pintan el primer pantallazo (display condensada y serif itálica). */
 function preloadCriticalFonts(): Plugin {
   let base = '/';
@@ -29,7 +48,7 @@ function preloadCriticalFonts(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), preloadCriticalFonts()],
+  plugins: [react(), preloadCriticalFonts(), socialMeta()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },

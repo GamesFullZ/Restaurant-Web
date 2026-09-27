@@ -43,6 +43,7 @@ export function Footer() {
               <li><Link viewTransition to="/menu">Menú</Link></li>
               <li><Link viewTransition to="/reservar">Reservar</Link></li>
               <li><Link viewTransition to="/mis-reservas">Mis reservas</Link></li>
+              <li><Link viewTransition to="/proyecto">Caso de estudio</Link></li>
             </ul>
           </nav>
         </div>

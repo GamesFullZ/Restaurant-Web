@@ -31,6 +31,7 @@ const routes: RouteObject[] = [
       { path: '/mis-reservas', lazy: page(() => import('./pages/my/MyAccess')) },
       { path: '/mis-reservas/:code', lazy: page(() => import('./pages/my/MyReservation')) },
       { path: '/mis-reservas/:code/modificar', lazy: page(() => import('./pages/my/MyModify')) },
+      { path: '/proyecto', lazy: page(() => import('./pages/project/ProjectPage')) },
       { path: '*', lazy: page(() => import('./pages/NotFound')) },
     ],
   },

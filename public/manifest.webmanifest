@@ -1,0 +1,16 @@
+{
+  "name": "Mesa · Cocina mexicana contemporánea",
+  "short_name": "Mesa",
+  "description": "Reserva tu mesa exacta en el plano. Restaurante ficticio · caso de estudio.",
+  "lang": "es-MX",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F4EFE6",
+  "theme_color": "#161412",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

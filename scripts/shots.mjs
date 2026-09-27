@@ -6,7 +6,7 @@ import { mkdirSync } from 'node:fs';
 const out = process.argv[2] ?? 'shots';
 const targets = process.argv.slice(3).length ? process.argv.slice(3) : ['/:1440', '/:390', '/menu:1440', '/menu/pato-en-adobo:1440', '/reservar:1440', '/mis-reservas:1440', '/admin:1440'];
 mkdirSync(out, { recursive: true });
-const server = await preview({ preview: { port: 4183 }, logLevel: 'error' });
+const server = await preview({ preview: { port: 4184 }, logLevel: 'error' });
 const browser = await chromium.launch({
   executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
   args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
@@ -19,7 +19,7 @@ for (const t of targets) {
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
-  await page.goto(`http://localhost:4183${path}`, { waitUntil: 'networkidle' });
+  await page.goto(`http://localhost:4180${path}`, { waitUntil: 'networkidle' });
   if (path.startsWith('/admin')) {
     if (page.url().includes('/login')) {
       await page.fill('#a-user', 'admin');
