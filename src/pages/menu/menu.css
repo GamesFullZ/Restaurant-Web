@@ -480,14 +480,22 @@ body:has(.site-header:not(.is-hidden)) .menu-tabs {
 }
 @media (max-width: 640px) {
   .dish-nav {
-    position: sticky;
-    bottom: 0;
-    z-index: 30;
-    background: var(--nixtamal);
-    padding-block: 12px;
+    padding-block: 20px;
   }
   .dish-nav__link {
     font-size: 0.95rem;
+  }
+}
+@media (max-width: 1023px) {
+  .dish-greca {
+    display: none;
+  }
+  .dish-stage__ring {
+    inset: -6%;
+  }
+  .dish-stage__tiles {
+    right: -4%;
+    width: 18%;
   }
 }
 

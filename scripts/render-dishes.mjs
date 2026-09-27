@@ -14,7 +14,7 @@ const ALL = [
   'agua-de-pepino-y-limon', 'margarita-de-la-casa', 'cerveza-clara', 'cerveza-ambar',
   'taco-hero', 'mesa-vacia',
 ];
-const EXTRA = { 'taco-hero': { w: 1400, h: 1100, dir: 'images' }, 'mesa-vacia': { w: 1500, h: 1100, dir: 'images' } };
+const EXTRA = { 'taco-hero': { w: 1200, h: 1200, dir: 'images' }, 'mesa-vacia': { w: 1500, h: 1100, dir: 'images' } };
 
 const slugs = process.argv.slice(2).length ? process.argv.slice(2) : ALL;
 const outDir = resolve('public/images/dishes');

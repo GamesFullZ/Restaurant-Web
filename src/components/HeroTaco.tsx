@@ -52,7 +52,7 @@ export function HeroTaco({ progress, className }: { progress: React.MutableRefOb
   const staticMode = reduced || failed || lite;
   return (
     <div className={cx('hero-taco', className, ready && !staticMode && 'is-ready', lite && !reduced && 'is-lite')} ref={wrap} role="img" aria-label="Taco de short rib con cebolla encurtida y salsa de chile morita, en 3D.">
-      <img src={fallback} alt="" aria-hidden width={1400} height={1100} fetchPriority="high" decoding="async" className={cx('hero-taco__fallback', staticMode && 'is-static')} />
+      <img src={fallback} alt="" aria-hidden width={1200} height={1200} fetchPriority="high" decoding="async" className={cx('hero-taco__fallback', staticMode && 'is-static')} />
     </div>
   );
 }

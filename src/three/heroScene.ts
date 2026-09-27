@@ -8,16 +8,21 @@ const smooth = (a: number, b: number, x: number) => {
   return t * t * (3 - 2 * t);
 };
 
+export interface HeroTacoOptions {
+  /** Estudio: conserva el buffer para capturar el primer cuadro (render estático del hero). */
+  capture?: boolean;
+}
+
 /** Monta la escena del taco del Hero en `el`. Devuelve la limpieza, o null si WebGL falla. */
-export function mountHeroTaco(el: HTMLElement, progress: { current: { p: number } }, onReady: () => void): (() => void) | null {
+export function mountHeroTaco(el: HTMLElement, progress: { current: { p: number } }, onReady: () => void, opts: HeroTacoOptions = {}): (() => void) | null {
   let renderer: THREE.WebGLRenderer;
   try {
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: !!opts.capture });
   } catch {
     return null;
   }
-  const lowPower = window.innerWidth < 768 || (navigator.hardwareConcurrency ?? 8) <= 4;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPower ? 1.5 : 2));
+  const lowPower = !opts.capture && (window.innerWidth < 768 || (navigator.hardwareConcurrency ?? 8) <= 4);
+  renderer.setPixelRatio(opts.capture ? 1 : Math.min(window.devicePixelRatio, lowPower ? 1.5 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
@@ -82,7 +87,7 @@ export function mountHeroTaco(el: HTMLElement, progress: { current: { p: number 
   catcher.rotation.x = -Math.PI / 2;
   catcher.position.y = -1.25;
   catcher.receiveShadow = true;
-  scene.add(catcher);
+  if (!opts.capture) scene.add(catcher);
   taco.traverse((o) => {
     o.castShadow = true;
   });
@@ -94,7 +99,7 @@ export function mountHeroTaco(el: HTMLElement, progress: { current: { p: number 
     renderer.domElement.style.width = `${w}px`;
     renderer.domElement.style.height = `${h}px`;
     cam.aspect = w / Math.max(1, h);
-    cam.position.z = w < h ? 7.4 : 6.2;
+    cam.position.z = w < h * 0.8 ? 7.4 : 6.2;
     cam.updateProjectionMatrix();
   };
   resize();
@@ -122,7 +127,7 @@ export function mountHeroTaco(el: HTMLElement, progress: { current: { p: number 
     raf = requestAnimationFrame(loop);
     if (!visible && !first) return;
     timer.update();
-    const t = timer.getElapsed();
+    const t = opts.capture ? 0 : timer.getElapsed();
     const p = progress.current.p;
     sp += (p - sp) * 0.12;
     pointer.x += (pointer.tx - pointer.x) * 0.05;
