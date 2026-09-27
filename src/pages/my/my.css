@@ -1,0 +1,225 @@
+.my-page {
+  padding: calc(var(--header-h) + 40px) 0 110px;
+  min-height: 90vh;
+  background: var(--nixtamal);
+}
+.my-title {
+  font-size: clamp(3rem, 9vw, 7rem);
+  line-height: 0.86;
+}
+.my-title .serif-i {
+  text-transform: none;
+  color: var(--chile);
+  font-size: 0.85em;
+}
+.my-access__grid {
+  display: grid;
+  gap: 40px;
+  align-items: start;
+}
+@media (min-width: 960px) {
+  .my-access__grid {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 72px;
+    padding-top: 30px;
+  }
+}
+.my-access__intro {
+  display: grid;
+  gap: 20px;
+}
+.ticket-art {
+  position: relative;
+  margin-top: 20px;
+  width: min(360px, 100%);
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-xl);
+  background: var(--obsidiana);
+  color: var(--nixtamal);
+  display: grid;
+  place-items: center;
+  font-size: 1.8rem;
+  letter-spacing: 0.1em;
+  overflow: hidden;
+  transform: rotate(-4deg);
+  box-shadow: var(--shadow-2);
+}
+.ticket-art svg {
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  width: 110px;
+}
+.my-form {
+  display: grid;
+  gap: 18px;
+  padding: clamp(22px, 4vw, 36px);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-1);
+}
+.my-form__help {
+  font-size: 0.88rem;
+  color: var(--ink-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.my-form__alt {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-self: start;
+}
+.my-detail {
+  display: grid;
+  gap: 40px;
+}
+@media (min-width: 1024px) {
+  .my-detail {
+    grid-template-columns: 1.2fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .my-detail__map {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+  }
+}
+.my-detail__main {
+  display: grid;
+  gap: 18px;
+}
+.my-detail__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.code-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--obsidiana);
+  background: transparent;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.code-chip svg {
+  width: 15px;
+}
+.my-when {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  line-height: 1;
+}
+.my-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-2);
+}
+.kv__note {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.1rem;
+  margin-top: 4px;
+}
+.my-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+}
+.my-other {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: start;
+  margin-top: 8px;
+}
+.my-map__cap {
+  margin-top: 12px;
+  color: var(--ink-2);
+}
+.dialog-sum {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+.my-cancelled__inner {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 18px;
+  padding-top: 40px;
+}
+.my-cancelled__art {
+  width: 120px;
+  color: var(--ink-3);
+}
+.my-code {
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+}
+.my-choose {
+  display: grid;
+  gap: 18px;
+}
+.choose-grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+@media (min-width: 800px) {
+  .choose-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.choose-card {
+  display: grid;
+  gap: 10px;
+  text-align: left;
+  padding: 28px;
+  border-radius: var(--radius-xl);
+  border: 1.5px solid var(--line-strong);
+  background: var(--paper);
+  transition:
+    border-color var(--t-short),
+    transform 0.3s var(--ease-spring),
+    box-shadow var(--t-short);
+}
+.choose-card:hover,
+.choose-card:focus-visible {
+  border-color: var(--obsidiana);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-2);
+}
+.choose-card svg {
+  width: 34px;
+  height: 34px;
+  color: var(--chile);
+}
+.choose-card strong {
+  font-family: var(--font-display);
+  font-stretch: 75%;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+.choose-card span {
+  color: var(--ink-2);
+}
+.my-dataform {
+  display: grid;
+  gap: 22px;
+  max-width: 900px;
+}
