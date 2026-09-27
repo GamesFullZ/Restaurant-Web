@@ -56,7 +56,7 @@ export default function DishPage() {
     <div ref={page} className={`dish-page ${soldOut ? 'is-soldout' : ''}`}>
       <div ref={stage} className="dish-stage">
         <div className="container dish-stage__inner">
-          <Link to={`/menu#${dish.categoryId}`} className="back-link">
+          <Link viewTransition to={`/menu#${dish.categoryId}`} className="back-link">
             <ArrowLeft aria-hidden /> Volver al menú
           </Link>
           <div className="dish-stage__visual">
@@ -94,7 +94,7 @@ export default function DishPage() {
             <p className="dish-info__desc serif-i stage-3" data-reveal style={{ ['--i' as string]: 3 }}>{dish.description}</p>
             {soldOut && <p className="dish-info__soldout stage-3" data-reveal style={{ ['--i' as string]: 3 }}>Hoy se nos terminó. Vuelve pronto o pregunta por él al reservar.</p>}
             <div className="dish-info__actions stage-4" data-reveal style={{ ['--i' as string]: 4 }}>
-              <Link to="/reservar" className="btn btn--primary btn--lg">
+              <Link viewTransition to="/reservar" className="btn btn--primary btn--lg">
                 Reservar mesa <ArrowUpRight className="arrow" aria-hidden />
               </Link>
             </div>

@@ -13,7 +13,7 @@ export function Isotype({ size = 28, className }: { size?: number; className?: s
 
 export function Logo({ to = '/', className, label = 'Mesa, ir al inicio' }: { to?: string; className?: string; label?: string }) {
   return (
-    <Link to={to} className={cx('logo', className)} aria-label={label}>
+    <Link viewTransition to={to} className={cx('logo', className)} aria-label={label}>
       <Isotype />
       <span className="logo__word display-wide" aria-hidden>
         Mesa

@@ -13,18 +13,18 @@ export function NotFoundContent({ dish }: { dish?: boolean }) {
           <p className="lead">{dish ? 'Puede que esté oculto temporalmente o que haya cambiado de nombre.' : 'La página que buscas no está aquí.'}</p>
           <div className="nf__actions">
             {dish ? (
-              <Link to="/menu" className="btn btn--primary btn--lg">
+              <Link viewTransition to="/menu" className="btn btn--primary btn--lg">
                 Ver menú
               </Link>
             ) : (
               <>
-                <Link to="/" className="btn btn--ghost">
+                <Link viewTransition to="/" className="btn btn--ghost">
                   Inicio
                 </Link>
-                <Link to="/menu" className="btn btn--ghost">
+                <Link viewTransition to="/menu" className="btn btn--ghost">
                   Menú
                 </Link>
-                <Link to="/reservar" className="btn btn--primary">
+                <Link viewTransition to="/reservar" className="btn btn--primary">
                   Reservar mesa <ArrowUpRight className="arrow" aria-hidden />
                 </Link>
               </>

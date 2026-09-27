@@ -52,7 +52,7 @@ export function ReserveCTA() {
         <p className="lead" data-reveal>
           Elige horario, fecha y hasta la mesa exacta. Toma menos de dos minutos.
         </p>
-        <Link to="/reservar" className="btn btn--light btn--lg" data-reveal>
+        <Link viewTransition to="/reservar" className="btn btn--light btn--lg" data-reveal>
           Reservar mesa <ArrowUpRight className="arrow" aria-hidden />
         </Link>
       </div>

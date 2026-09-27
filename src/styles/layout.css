@@ -840,3 +840,26 @@
   box-shadow: var(--shadow-2);
   width: 100%;
 }
+
+/* ---------- progreso de navegación */
+.nav-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 3px;
+  z-index: 200;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--chile), var(--maiz));
+  transform-origin: left;
+  transform: scaleX(0);
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s var(--ease-out);
+}
+.nav-progress.is-busy {
+  opacity: 1;
+  transform: scaleX(0.82);
+  transition:
+    opacity 0.2s ease 0.15s,
+    transform 2.4s cubic-bezier(0.1, 0.7, 0.2, 1) 0.15s;
+}

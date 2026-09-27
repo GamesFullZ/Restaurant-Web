@@ -249,26 +249,86 @@ export function citrusTexture(flesh = '#C9D86A', rind = '#6E9A2E') {
 }
 
 /** Adobo rojo/verde sobre pescado, con líneas de brasa. */
+/**
+ * Pescado a la talla abierto en mariposa, visto desde arriba (u: cabeza → cola, v: lomo superior → inferior).
+ * Mitad superior en adobo rojo, mitad inferior en adobo verde, espina al centro, marcas de parrilla,
+ * cabeza y cola doradas por el fuego.
+ */
 export function fishTexture() {
-  return canvasTexture('fish-talla', 1024, (ctx, w, h, r) => {
-    noiseFill(ctx, w, h, 5, (n, x) => {
-      const red = x < w / 2;
-      const base = red ? [178, 58, 30] : [86, 124, 48];
-      return [base[0] + n * 40, base[1] + n * 30, base[2] + n * 20];
+  return canvasTexture('fish-talla-v2', 1024, (ctx, w, h, r) => {
+    const red = hex('#B8401F');
+    const green = hex('#5E8A2E');
+    const skin = hex('#8A5A2B');
+    noiseFill(ctx, w, h, 7, (n, x, y) => {
+      const u = x / w;
+      const v = y / h;
+      const edge = Math.abs(v - 0.5) * 2; // 0 en la espina, 1 en el borde
+      if (u < 0.2 || u > 0.83) {
+        // cabeza y cola: piel asada
+        const k = 0.75 + n * 0.5;
+        return [skin[0] * k, skin[1] * k, skin[2] * k];
+      }
+      const base = v < 0.5 ? red : green;
+      const k = 0.74 + n * 0.62 + (1 - edge) * 0.1;
+      // borde tostado
+      const burn = Math.max(0, edge - 0.82) * 2.4;
+      return [base[0] * k * (1 - burn) + 40 * burn, base[1] * k * (1 - burn) + 24 * burn, base[2] * k * (1 - burn) + 12 * burn];
     });
-    ctx.globalAlpha = 0.5;
-    for (let i = 0; i < 9; i++) {
-      ctx.fillStyle = '#2a1a10';
+    // espina central y costillas insinuadas
+    ctx.strokeStyle = 'rgba(245,230,205,0.55)';
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.moveTo(w * 0.2, h * 0.5);
+    ctx.lineTo(w * 0.84, h * 0.5);
+    ctx.stroke();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(40,20,10,0.22)';
+    for (let i = 0; i < 16; i++) {
+      const x = w * (0.24 + i * 0.037);
+      ctx.beginPath();
+      ctx.moveTo(x, h * 0.5);
+      ctx.quadraticCurveTo(x + 18, h * 0.3, x + 6, h * 0.14);
+      ctx.moveTo(x, h * 0.5);
+      ctx.quadraticCurveTo(x + 18, h * 0.7, x + 6, h * 0.86);
+      ctx.stroke();
+    }
+    // marcas de parrilla diagonales
+    ctx.fillStyle = 'rgba(30,14,6,0.42)';
+    for (let i = 0; i < 11; i++) {
       ctx.save();
-      ctx.translate((i + 0.5) * (w / 9), h / 2);
-      ctx.rotate(0.6);
-      ctx.fillRect(-7, -h, 14, h * 2);
+      ctx.translate(w * (0.14 + i * 0.075), h / 2);
+      ctx.rotate(0.55);
+      ctx.fillRect(-5, -h, 10, h * 2);
       ctx.restore();
     }
-    ctx.globalAlpha = 1;
-    for (let i = 0; i < 600; i++) {
-      ctx.fillStyle = `rgba(255,240,220,${r() * 0.18})`;
-      ctx.fillRect(r() * w, r() * h, 2, 2);
+    // ojo
+    ctx.fillStyle = '#1b120c';
+    ctx.beginPath();
+    ctx.arc(w * 0.08, h * 0.44, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.beginPath();
+    ctx.arc(w * 0.076, h * 0.425, 5, 0, Math.PI * 2);
+    ctx.fill();
+    // agalla
+    ctx.strokeStyle = 'rgba(30,14,6,0.5)';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.arc(w * 0.13, h * 0.5, h * 0.3, -0.9, 0.9);
+    ctx.stroke();
+    // radios de la cola
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(30,14,6,0.35)';
+    for (let i = 0; i < 12; i++) {
+      ctx.beginPath();
+      ctx.moveTo(w * 0.85, h * 0.5);
+      ctx.lineTo(w, h * (0.08 + i * 0.075));
+      ctx.stroke();
+    }
+    // brillo de aceite y pimienta
+    for (let i = 0; i < 900; i++) {
+      ctx.fillStyle = r() < 0.5 ? `rgba(255,236,210,${r() * 0.25})` : `rgba(25,12,6,${r() * 0.4})`;
+      ctx.fillRect(r() * w, r() * h, 2 + r() * 2, 2 + r() * 2);
     }
   });
 }

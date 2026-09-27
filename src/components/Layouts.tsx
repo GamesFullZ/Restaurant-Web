@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigation } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { DemoHelper } from './DemoHelper';
@@ -41,6 +41,12 @@ function RouteFocus() {
   return null;
 }
 
+/** Barra fina de progreso mientras se descarga la siguiente página (solo si tarda). */
+export function NavProgress() {
+  const busy = useNavigation().state !== 'idle';
+  return <div className={`nav-progress${busy ? ' is-busy' : ''}`} aria-hidden />;
+}
+
 export function PublicLayout() {
   const reduced = useReducedMotion();
   useEffect(() => {
@@ -58,6 +64,7 @@ export function PublicLayout() {
       </a>
       <MotionAttr />
       <RouteFocus />
+      <NavProgress />
       <StorageNotice />
       <Header />
       <main id="main" className="site-main">

@@ -91,13 +91,13 @@ export default function ConfirmationPage() {
           <span>El restaurante confirmará tu reserva en breve. Tu mesa ya está apartada.</span>
         </div>
         <div className="confirm__actions">
-          <Link to={`/mis-reservas/${r.code}`} className="btn btn--primary btn--lg">
+          <Link viewTransition to={`/mis-reservas/${r.code}`} className="btn btn--primary btn--lg">
             Ver mi reserva <ArrowUpRight className="arrow" aria-hidden />
           </Link>
           <button className="btn btn--ghost btn--lg" onClick={() => toast('Acción simulada: en un restaurante real se agregaría a tu calendario.', { kind: 'info' })}>
             <CalendarPlus aria-hidden /> Agregar al calendario <SimPill />
           </button>
-          <Link to="/" className="link">
+          <Link viewTransition to="/" className="link">
             Volver al inicio
           </Link>
         </div>

@@ -142,10 +142,10 @@ export function Hero() {
             </h1>
             <p className="hero__sub lead">Cocina mexicana contemporánea en el corazón de Monterrey.</p>
             <div className="hero__ctas">
-              <Link to="/reservar" className="btn btn--primary btn--lg magnetic">
+              <Link viewTransition to="/reservar" className="btn btn--primary btn--lg magnetic">
                 Reservar mesa <ArrowUpRight className="arrow" aria-hidden />
               </Link>
-              <Link to="/menu" className="btn btn--ghost btn--lg">
+              <Link viewTransition to="/menu" className="btn btn--ghost btn--lg">
                 Ver menú
               </Link>
             </div>

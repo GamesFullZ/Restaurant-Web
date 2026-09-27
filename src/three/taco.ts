@@ -89,15 +89,45 @@ export function buildTaco(opts: TacoOptions = {}): THREE.Group {
   if (opts.kind === 'camaron') {
     // camarones, crema de aguacate, col morada/verde
     const shrimpMat = phys('#E9825A', { roughness: 0.35, clearcoat: 0.6, clearcoatRoughness: 0.3, sheen: 0.4, sheenColor: new THREE.Color('#ffd2b8') });
-    for (let i = 0; i < 5; i++) {
-      const tg = new THREE.TorusGeometry(0.12, 0.05, 14, 28, Math.PI * 1.25);
-      const m = new THREE.Mesh(tg, shrimpMat);
-      const x = -0.5 + i * 0.25 + range(r, -0.03, 0.03);
-      const z = range(r, -0.1, 0.1);
-      m.position.set(x, fillingTop(x, z, 0.05, 0.12) + 0.02, z);
-      m.rotation.set(Math.PI / 2 + range(r, -0.4, 0.4), range(r, -0.5, 0.5), r() * 6.28);
-      m.castShadow = m.receiveShadow = true;
-      meatLayer.add(m);
+    // camarón: arco segmentado que se adelgaza hacia la cola + abanico de cola
+    const shrimpGeo = (() => {
+      const pts: THREE.Vector3[] = [];
+      for (let k = 0; k <= 24; k++) {
+        const a = (k / 24) * Math.PI * 1.3;
+        pts.push(new THREE.Vector3(Math.cos(a) * 0.13, 0, Math.sin(a) * 0.13));
+      }
+      const tube = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 48, 1, 14);
+      const p = tube.attributes.position as THREE.BufferAttribute;
+      // radio variable (grueso en la cabeza, fino en la cola) y segmentos marcados
+      const rad = (t: number) => (0.062 - 0.036 * t) * (1 - 0.1 * Math.max(0, Math.sin(t * Math.PI * 9)));
+      for (let k = 0; k < p.count; k++) {
+        const v = new THREE.Vector3().fromBufferAttribute(p, k);
+        const a = Math.atan2(v.z, v.x);
+        const t = Math.min(1, Math.max(0, (a < -0.5 ? a + Math.PI * 2 : a) / (Math.PI * 1.3)));
+        const c = new THREE.Vector3(Math.cos(a) * 0.13, 0, Math.sin(a) * 0.13);
+        const d = v.sub(c);
+        p.setXYZ(k, c.x + d.x * rad(t), c.y + d.y * rad(t), c.z + d.z * rad(t));
+      }
+      tube.computeVertexNormals();
+      return tube;
+    })();
+    const tailGeo = new THREE.ConeGeometry(0.05, 0.09, 3, 1);
+    tailGeo.scale(1, 1, 0.25);
+    const tailMat = phys('#D4502B', { roughness: 0.4, clearcoat: 0.5 });
+    for (let i = 0; i < 6; i++) {
+      const s = new THREE.Group();
+      s.add(new THREE.Mesh(shrimpGeo, shrimpMat));
+      const tail = new THREE.Mesh(tailGeo, tailMat);
+      const ta = Math.PI * 1.3;
+      tail.position.set(Math.cos(ta) * 0.13, 0, Math.sin(ta) * 0.13);
+      tail.rotation.set(0, -ta, Math.PI / 2);
+      s.add(tail);
+      const x = -0.55 + i * 0.22 + range(r, -0.03, 0.03);
+      const z = (i % 2 ? 0.07 : -0.05) + range(r, -0.03, 0.03);
+      s.position.set(x, fillingTop(x, z, 0.05, 0.3) + 0.04, z);
+      s.rotation.set(range(r, -0.5, -0.2), r() * 6.28, range(r, -0.3, 0.3));
+      s.traverse((o) => (o.castShadow = o.receiveShadow = true));
+      meatLayer.add(s);
     }
     const cab: Placement[] = [];
     for (let i = 0; i < 90; i++) {

@@ -55,7 +55,7 @@ export default function MyModify() {
   return (
     <section className="my-page">
       <div className="container my-choose">
-        <Link to={`/mis-reservas/${r.code}`} className="back-link">
+        <Link viewTransition to={`/mis-reservas/${r.code}`} className="back-link">
           <ArrowLeft aria-hidden /> Volver a mi reserva
         </Link>
         <p className="mono muted">{r.code}</p>

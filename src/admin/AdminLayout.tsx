@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavProgress } from '@/components/Layouts';
 import { CalendarRange, ExternalLink, LayoutDashboard, LogOut, Menu as MenuIcon, Table2, UtensilsCrossed, X } from 'lucide-react';
 import { logoutAdmin, useIsAdmin } from '@/store/session';
 import { Logo } from '@/components/Brand';
@@ -70,6 +71,7 @@ export default function AdminLayout() {
           <Logo to="/admin" label="Panel de Mesa" />
           <span className="pill pill--demo">Demo</span>
         </header>
+        <NavProgress />
         <main id="admin-main" className="admin__main">
           <Outlet />
         </main>

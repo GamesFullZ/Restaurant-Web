@@ -67,10 +67,10 @@ export default function MyReservation() {
           <p className="mono my-code">{r.code}</p>
           <StatusBadge status="Cancelada" />
           <div className="my-actions">
-            <Link to={`/reservar?personas=${r.party}`} className="btn btn--primary btn--lg">
+            <Link viewTransition to={`/reservar?personas=${r.party}`} className="btn btn--primary btn--lg">
               <RotateCcw aria-hidden /> Reservar de nuevo
             </Link>
-            <Link to="/" className="btn btn--ghost btn--lg">
+            <Link viewTransition to="/" className="btn btn--ghost btn--lg">
               Volver al inicio
             </Link>
           </div>
@@ -137,7 +137,7 @@ export default function MyReservation() {
           </dl>
           {r.status === 'Cancelada' || r.status === 'Completada' ? (
             <div className="my-actions">
-              <Link to={`/reservar?personas=${r.party}`} className="btn btn--primary">
+              <Link viewTransition to={`/reservar?personas=${r.party}`} className="btn btn--primary">
                 <RotateCcw aria-hidden /> Reservar de nuevo
               </Link>
             </div>
@@ -165,7 +165,7 @@ export default function MyReservation() {
               </div>
             </div>
           )}
-          <Link to="/mis-reservas" className="link my-other">
+          <Link viewTransition to="/mis-reservas" className="link my-other">
             <Search aria-hidden width={16} /> Consultar otra reserva
           </Link>
         </div>

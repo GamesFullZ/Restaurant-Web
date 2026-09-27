@@ -77,7 +77,7 @@ export function Header() {
             <ul>
               {LINKS.map((l) => (
                 <li key={l.to}>
-                  <NavLink to={l.to} end={l.end} className={({ isActive }) => cx('site-nav__link', isActive && 'is-active')}>
+                  <NavLink viewTransition to={l.to} end={l.end} className={({ isActive }) => cx('site-nav__link', isActive && 'is-active')}>
                     {l.label}
                   </NavLink>
                 </li>
@@ -86,7 +86,7 @@ export function Header() {
           </nav>
           <div className="site-header__actions">
             {!inFlow && (
-              <NavLink to="/reservar" className="btn btn--primary btn--sm header-cta">
+              <NavLink viewTransition to="/reservar" className="btn btn--primary btn--sm header-cta">
                 <span className="hide-mobile">Reservar mesa</span>
                 <span className="show-mobile">Reservar</span>
                 <ArrowUpRight className="arrow" aria-hidden />
@@ -117,7 +117,7 @@ export function Header() {
           <ul>
             {LINKS.map((l, i) => (
               <li key={l.to} style={{ ['--i' as string]: i }}>
-                <NavLink to={l.to} end={l.end} className={({ isActive }) => cx('mobile-nav__link', isActive && 'is-active')}>
+                <NavLink viewTransition to={l.to} end={l.end} className={({ isActive }) => cx('mobile-nav__link', isActive && 'is-active')}>
                   <span className="mono">0{i + 1}</span>
                   {l.label}
                 </NavLink>

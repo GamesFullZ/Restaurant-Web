@@ -2,7 +2,17 @@
  * Pantalla de entrada (definida en index.html para pintar antes que el JS).
  * Se retira cuando la primera página está montada y las fuentes cargaron.
  */
-const MIN_VISIBLE_MS = 900;
+function seenThisSession() {
+  try {
+    const seen = sessionStorage.getItem('mesa.splash') === '1';
+    sessionStorage.setItem('mesa.splash', '1');
+    return seen;
+  } catch {
+    return false;
+  }
+}
+/** La entrada completa se ve una vez por sesión; en recargas solo se abre el telón. */
+const MIN_VISIBLE_MS = seenThisSession() ? 250 : 900;
 const MAX_VISIBLE_MS = 4000;
 /** Momento en que el telón ya descubrió lo suficiente para que arranquen las entradas. */
 const REVEAL_AFTER_MS = 320;

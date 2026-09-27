@@ -47,7 +47,7 @@ export function Featured() {
           </div>
           <div className="section-head__side" data-reveal>
             <p className="lead">Cuatro platillos para empezar.</p>
-            <Link to="/menu" className="btn btn--ghost">
+            <Link viewTransition to="/menu" className="btn btn--ghost">
               Ver menú completo <ArrowUpRight className="arrow" aria-hidden />
             </Link>
           </div>

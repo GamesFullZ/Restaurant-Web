@@ -69,7 +69,7 @@ export default function MyAccess() {
               <p className="alert__title">No encontramos una reserva con esos datos.</p>
               <p className="alert__text">Revisa que el código y el teléfono sean los que usaste al reservar.</p>
               <div className="alert__actions">
-                <Link to="/reservar" className="btn btn--sm btn--ghost">
+                <Link viewTransition to="/reservar" className="btn btn--sm btn--ghost">
                   Reservar mesa
                 </Link>
               </div>
@@ -105,7 +105,7 @@ export default function MyAccess() {
           <p className="my-form__help">
             ¿Perdiste tu código? En un restaurante real te lo reenviaríamos por SMS. <SimPill />
           </p>
-          <Link to="/reservar" className="link my-form__alt">
+          <Link viewTransition to="/reservar" className="link my-form__alt">
             ¿Aún no reservas? Reservar mesa <ArrowUpRight aria-hidden width={16} />
           </Link>
         </form>

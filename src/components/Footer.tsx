@@ -39,10 +39,10 @@ export function Footer() {
           <nav aria-label="Pie de página">
             <h2 className="eyebrow">Navegación</h2>
             <ul>
-              <li><Link to="/">Inicio</Link></li>
-              <li><Link to="/menu">Menú</Link></li>
-              <li><Link to="/reservar">Reservar</Link></li>
-              <li><Link to="/mis-reservas">Mis reservas</Link></li>
+              <li><Link viewTransition to="/">Inicio</Link></li>
+              <li><Link viewTransition to="/menu">Menú</Link></li>
+              <li><Link viewTransition to="/reservar">Reservar</Link></li>
+              <li><Link viewTransition to="/mis-reservas">Mis reservas</Link></li>
             </ul>
           </nav>
         </div>
@@ -57,7 +57,7 @@ export function Footer() {
             <span className="switch__track" aria-hidden />
             Reducir movimiento
           </label>
-          <Link to="/admin/login" className="site-footer__admin">
+          <Link viewTransition to="/admin/login" className="site-footer__admin">
             Acceso administrador (demo)
           </Link>
           <p className="site-footer__note">Proyecto de portafolio · Restaurante ficticio. Las reservas se guardan solo en este navegador.</p>

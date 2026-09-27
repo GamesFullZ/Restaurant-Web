@@ -201,7 +201,49 @@ function drink(opts: {
   g.userData.glassTop = c.top + H;
   g.userData.liquidTop = c.top + H * fill;
   g.userData.R = R;
-  return shadowed(g);
+  shadowed(g);
+  // El vidrio y el líquido no proyectan sombra opaca (se veía un rectángulo gris):
+  // en su lugar, una sombra suave teñida del color de la bebida, hacia donde cae la luz.
+  gl.traverse((o) => (o.castShadow = false));
+  g.add(glassShadow(R * taper, H * fill * 0.95, opts.color, c.top));
+  return g;
+}
+
+let shadowTex: THREE.CanvasTexture | null = null;
+function softShadowTexture() {
+  if (shadowTex) return shadowTex;
+  const cv = document.createElement('canvas');
+  cv.width = 256;
+  cv.height = 128;
+  const ctx = cv.getContext('2d')!;
+  // mancha alargada: más densa junto a la base del vaso (izquierda) y difusa hacia la punta
+  const grd = ctx.createLinearGradient(0, 0, 256, 0);
+  grd.addColorStop(0, 'rgba(255,255,255,0.95)');
+  grd.addColorStop(0.55, 'rgba(255,255,255,0.45)');
+  grd.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = grd;
+  ctx.filter = 'blur(10px)';
+  ctx.beginPath();
+  ctx.ellipse(118, 64, 104, 40, 0, 0, Math.PI * 2);
+  ctx.fill();
+  shadowTex = new THREE.CanvasTexture(cv);
+  return shadowTex;
+}
+
+function glassShadow(radius: number, height: number, tint: string, y: number) {
+  // dirección de la luz principal proyectada al suelo (ver stage.ts: key en -5.5, 6.5, -1.2)
+  const dir = new THREE.Vector2(5.5, 1.2).normalize();
+  const len = height * 0.85 + radius * 2;
+  const color = new THREE.Color(tint).lerp(new THREE.Color('#3A2A1C'), 0.55);
+  const m = new THREE.Mesh(
+    new THREE.PlaneGeometry(len, radius * 2.3),
+    new THREE.MeshBasicMaterial({ map: softShadowTexture(), color, transparent: true, opacity: 0.5, depthWrite: false }),
+  );
+  m.rotation.x = -Math.PI / 2;
+  m.rotation.z = -Math.atan2(dir.y, dir.x);
+  m.position.set(dir.x * (len / 2 - radius * 0.9), y + 0.003, dir.y * (len / 2 - radius * 0.9));
+  m.renderOrder = -1;
+  return m;
 }
 
 // ------------------------------------------------------------------ recetas
@@ -373,7 +415,7 @@ const recipes: Record<string, Recipe> = {
     wheel.rotation.set(0.1, 0, 0.12);
     g.add(wheel);
     void r;
-    return { root: shadowed(g), view: { type: 'tq', width: 2.0, elevation: 30, azimuth: -20, targetY: 0.18 } };
+    return { root: shadowed(g), view: { type: 'tq', width: 2.0, elevation: 44, azimuth: -24, targetY: 0.16 } };
   },
 
   'quesadilla-de-hongos': () => {
@@ -456,27 +498,51 @@ const recipes: Record<string, Recipe> = {
   },
 
   'pescado-a-la-talla': () => {
+    const r = rng(110);
     const g = new THREE.Group();
     const p = ovalPlate('flat', 0.9, '#1E1B19', 1.5);
     g.add(p.mesh);
-    const fish = new THREE.Mesh(blob(0.95, 0.07, 0.42, 0.08, 25, 5, 0.9), std('#ffffff', 0.55, { map: fishTexture(), bumpMap: bumpNoise('fish', 40), bumpScale: 1.2 }));
-    // mapeo planar para que la textura roja/verde se vea desde arriba
-    const pos = fish.geometry.attributes.position as THREE.BufferAttribute;
+    // silueta del pescado abierto (x: cabeza en -0.95 → cola en 0.95; y: ancho)
+    const s = new THREE.Shape();
+    s.moveTo(-0.97, 0);
+    s.bezierCurveTo(-0.95, 0.2, -0.72, 0.36, -0.45, 0.4);
+    s.bezierCurveTo(-0.1, 0.44, 0.35, 0.36, 0.58, 0.16);
+    s.bezierCurveTo(0.64, 0.1, 0.68, 0.07, 0.72, 0.07);
+    s.bezierCurveTo(0.8, 0.18, 0.9, 0.3, 0.98, 0.34);
+    s.bezierCurveTo(0.93, 0.16, 0.9, 0.05, 0.9, 0);
+    s.bezierCurveTo(0.9, -0.05, 0.93, -0.16, 0.98, -0.34);
+    s.bezierCurveTo(0.9, -0.3, 0.8, -0.18, 0.72, -0.07);
+    s.bezierCurveTo(0.68, -0.07, 0.64, -0.1, 0.58, -0.16);
+    s.bezierCurveTo(0.35, -0.36, -0.1, -0.44, -0.45, -0.4);
+    s.bezierCurveTo(-0.72, -0.36, -0.95, -0.2, -0.97, 0);
+    const geo = new THREE.ExtrudeGeometry(s, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.03, bevelSegments: 5, curveSegments: 48 });
+    // mapeo planar (vista cenital) y un ligero abombado hacia la espina
+    const pos = geo.attributes.position as THREE.BufferAttribute;
     const uv: number[] = [];
-    for (let k = 0; k < pos.count; k++) uv.push(pos.getX(k) / 1.9 + 0.5, pos.getZ(k) / 0.84 + 0.5);
-    fish.geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
-    fish.position.set(-0.05, p.top + 0.05, 0);
-    fish.rotation.y = 0.08;
+    for (let k = 0; k < pos.count; k++) {
+      const x = pos.getX(k);
+      const y = pos.getY(k);
+      const z = pos.getZ(k);
+      if (z > 0.02) pos.setZ(k, z + Math.max(0, 0.05 - Math.abs(y) * 0.1) * (1 - Math.abs(x)));
+      uv.push((x + 1) / 2, 0.5 - y / 0.9);
+    }
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    geo.computeVertexNormals();
+    const fish = new THREE.Mesh(geo, std('#ffffff', 0.5, { map: fishTexture(), bumpMap: bumpNoise('fish', 40), bumpScale: 1.4 }));
+    fish.rotation.x = -Math.PI / 2;
+    fish.position.set(-0.02, p.top + 0.005, 0);
+    fish.rotation.z = 0.06;
     g.add(fish);
-    const lime = new THREE.Group();
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(0.16, 40, 20, 0, Math.PI * 2, 0, Math.PI / 2), std('#5E8F2A', 0.45));
-    const face = new THREE.Mesh(new THREE.CircleGeometry(0.16, 40), std('#ffffff', 0.3, { map: citrusTexture() }));
-    face.rotation.x = Math.PI / 2;
-    lime.add(dome, face);
-    lime.rotation.x = Math.PI;
-    lime.position.set(0.95, p.top + 0.16, 0.62);
-    lime.rotation.z = 0.9;
+    const top = p.top + 0.13;
+    g.add(herbs(r, 14, 0.5, () => top, 0.05, 0.02, [0.05, 0.08]));
+    g.add(onionSlivers(r, 7, 0.45, () => top, 0.05, 0, '#D8467F', 0.05));
+    const lime = limeWheel(0.14);
+    lime.position.set(0.38, p.top + 0.02, 0.62);
     g.add(lime);
+    const lime2 = limeWheel(0.13);
+    lime2.position.set(0.14, p.top + 0.045, 0.66);
+    lime2.rotation.set(0.12, 0, -0.1);
+    g.add(lime2);
     return { root: shadowed(g), view: { type: 'top', width: 2.2, rotate: Math.PI / 2 } };
   },
 
@@ -528,7 +594,7 @@ const recipes: Record<string, Recipe> = {
     g.add(sesame(r, 60, 0.5, () => p.top + 0.31, 0, 0));
     const rings = scatter(r, 6, 0.4, () => p.top + 0.32, { flat: true }).map((q) => ({ ...q, r: new THREE.Euler(Math.PI / 2, 0, 0) }));
     g.add(instanced(new THREE.TorusGeometry(0.06, 0.008, 8, 28), phys('#F4EFE8', { roughness: 0.3, transmission: 0.3 }), rings));
-    return { root: shadowed(g), view: { type: 'top', width: 2.1, rotate: 0.12 } };
+    return { root: shadowed(g), view: { type: 'top', width: 2.15, rotate: Math.PI / 2 + 0.1 } };
   },
 
   'pato-en-adobo': () => {
