@@ -421,37 +421,44 @@ const recipes: Record<string, Recipe> = {
   'quesadilla-de-hongos': () => {
     const r = rng(107);
     const g = new THREE.Group();
-    const p = plate('flat', 1.0, '#1E1B19');
+    const p = plate('flat', 1.0, '#EFE7DA');
     g.add(p.mesh);
     // media luna de maíz azul
     const q = new THREE.Group();
     const half = sheet({
       radius: (phi) => (phi <= Math.PI ? 0.62 * (1 + fbm(Math.cos(phi), Math.sin(phi), 3, 2) * 0.04) : 0.0001 + 0.62 * Math.abs(Math.sin(phi)) * 0),
-      thickness: 0.05,
-      rings: 18,
-      segs: 96,
-      map: (x, z) => V(x, 0.05 + Math.sin(Math.min(Math.PI, Math.max(0, Math.atan2(z, x)))) * 0.03 + fbm(x * 3, z * 3, 5, 2) * 0.012, z),
+      thickness: 0.06,
+      rings: 22,
+      segs: 120,
+      // abombada: más alta al centro de la media luna, baja hacia el borde curvo y el recto
+      map: (x, z) => {
+        const d = Math.min(1, Math.hypot(x, z) / 0.62);
+        const edge = Math.min(1, Math.max(0, z) / 0.12);
+        return V(x, 0.03 + 0.14 * (1 - d * d) * edge + fbm(x * 3, z * 3, 5, 2) * 0.014, z);
+      },
     });
     q.add(new THREE.Mesh(half, std('#ffffff', 0.72, { map: tortillaTexture('blue'), bumpMap: bumpNoise('azul', 30), bumpScale: 1.5, side: THREE.DoubleSide })));
     // hilos de queso Oaxaca asomando por el borde recto
-    for (let i = 0; i < 6; i++) {
-      const x0 = range(r, -0.45, 0.45);
+    for (let i = 0; i < 11; i++) {
+      const x0 = range(r, -0.5, 0.5);
       const curve = new THREE.CatmullRomCurve3([V(x0, 0.06, 0.0), V(x0 + range(r, -0.04, 0.04), 0.04, -0.05), V(x0 + range(r, -0.06, 0.06), 0.012, -0.1 - r() * 0.06)]);
       q.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 16, 0.012 + r() * 0.008, 8), glossy('#F5ECD6', 0.3)));
     }
-    q.add(instanced(blob(0.05, 0.02, 0.04, 0.3, 19, 2), glossy('#7A5230', 0.35), scatter(r, 8, 0.4, () => 0.03, { sx: 1, sz: 0.1, cz: -0.02 })));
-    q.position.set(-0.12, p.top, 0.12);
-    q.rotation.y = 0.35;
+    q.add(instanced(blob(0.05, 0.02, 0.04, 0.3, 19, 2), glossy('#7A5230', 0.35), scatter(r, 12, 0.46, () => 0.035, { sx: 1, sz: 0.12, cz: -0.03 })));
+    q.position.set(-0.04, p.top, 0.26);
+    q.scale.setScalar(1.12);
+    q.rotation.y = Math.PI + 0.3; // borde recto (queso y hongos) hacia la cámara
     g.add(q);
     // salsa verde en ramequín
     const rk = plate('ramekin', 0.22, '#EFE7DA');
-    rk.mesh.position.set(0.52, p.top, -0.5);
+    rk.mesh.position.set(0.5, p.top, 0.56);
     g.add(rk.mesh);
-    const salsa = new THREE.Mesh(new THREE.CircleGeometry(0.19, 48), glossy('#3F7A2A', 0.2));
+    const salsa = new THREE.Mesh(new THREE.CircleGeometry(0.19, 48), glossy('#2C5F1F', 0.18));
     salsa.rotation.x = -Math.PI / 2;
-    salsa.position.set(0.52, p.top + 0.09, -0.5);
+    salsa.position.set(0.5, p.top + 0.09, 0.56);
+    g.add(herbs(r, 7, 0.16, () => p.top + 0.02, -0.4, 0.5, [0.06, 0.09]));
     g.add(salsa);
-    return { root: shadowed(g), view: { type: 'tq', width: 2.1, elevation: 34, azimuth: -14, targetY: 0.08 } };
+    return { root: shadowed(g), view: { type: 'top', width: 2.15, rotate: -0.25 } };
   },
 
   'sopes-de-birria': () => {
