@@ -142,8 +142,8 @@
   opacity: 0;
 }
 .hero-taco.is-lite .hero-taco__fallback {
-  left: -6%;
-  scale: 1.18;
+  left: -3%;
+  scale: 1.1;
   animation: taco-float 6s ease-in-out infinite;
 }
 @keyframes taco-float {
@@ -278,6 +278,9 @@
     top: 0;
     left: auto;
     right: 2%;
+  }
+  .hero .cross {
+    display: none;
   }
   /* móvil: título → taco → texto → botones, para que el plato entre en el primer pantallazo */
   .hero__inner {

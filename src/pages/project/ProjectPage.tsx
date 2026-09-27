@@ -28,10 +28,10 @@ const PALETTE = [
 
 /** Medido con Lighthouse 13 y axe-core sobre el build de producción (ver README). */
 const QUALITY = [
-  { n: '98', l: 'Rendimiento Lighthouse (escritorio, portada)' },
-  { n: '100', l: 'Accesibilidad Lighthouse' },
-  { n: '0', l: 'Violaciones axe en 15 rutas × 2 anchos' },
-  { n: '37', l: 'Pruebas automáticas (unitarias + E2E)' },
+  { n: '97+', l: 'Rendimiento Lighthouse en escritorio, en las 6 páginas públicas' },
+  { n: '100', l: 'Accesibilidad, buenas prácticas y SEO en Lighthouse' },
+  { n: '0', l: 'Violaciones axe en 16 rutas, a 390 y 1440 px' },
+  { n: '35', l: 'Pruebas automáticas: 28 de reglas de negocio y 7 flujos E2E' },
 ];
 
 const STACK = ['React 19', 'TypeScript', 'Vite', 'React Router', 'Three.js', 'GSAP + ScrollTrigger', 'Lenis', 'View Transitions', 'Vitest', 'Playwright', 'IndexedDB', 'CSS a mano (sin framework)'];
@@ -137,7 +137,7 @@ export default function ProjectPage() {
           </div>
           <ul className="case-swatches">
             {PALETTE.map((c, i) => (
-              <li key={c.name} data-reveal style={{ ['--i' as string]: i, background: c.hex, color: c.ink ? 'var(--obsidiana)' : 'var(--nixtamal)' }}>
+              <li key={c.name} data-reveal style={{ ['--i' as string]: i, background: c.hex, color: c.ink ? 'var(--obsidiana)' : '#FFF8F0' }}>
                 <span className="case-swatches__name">{c.name}</span>
                 <span className="mono">{c.hex}</span>
               </li>

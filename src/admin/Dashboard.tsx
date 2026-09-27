@@ -83,7 +83,7 @@ export default function Dashboard() {
         <div className="alerts-row">
           {pendingCount > 0 && (
             <Link className="alert-chip" to="/admin/reservas?fecha=todas&estado=Pendiente">
-              <Clock3 aria-hidden /> {pendingCount} {pendingCount === 1 ? 'reserva pendiente' : 'reservas pendientes'} de confirmar
+              <Clock3 aria-hidden /> {pendingCount} {pendingCount === 1 ? 'pendiente' : 'pendientes'} de confirmar en total
             </Link>
           )}
           {toClose > 0 && (

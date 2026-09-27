@@ -499,14 +499,3 @@ body:has(.site-header:not(.is-hidden)) .menu-tabs {
   }
 }
 
-
-.page-skeleton {
-  padding-top: calc(var(--header-h) + 40px);
-  padding-bottom: 80px;
-  min-height: 80vh;
-}
-.page-skeleton__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}

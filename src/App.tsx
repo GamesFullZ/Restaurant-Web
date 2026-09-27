@@ -1,7 +1,6 @@
 import { useEffect, type ComponentType } from 'react';
 import { createBrowserRouter, createHashRouter, RouterProvider, type RouteObject } from 'react-router-dom';
 import { PublicLayout } from './components/Layouts';
-import { PageSkeleton } from './components/PageSkeleton';
 import { hideSplash } from './lib/splash';
 
 /**
@@ -21,7 +20,8 @@ const page = (load: () => Promise<{ default: ComponentType }>) => async () => {
 const routes: RouteObject[] = [
   {
     element: <PublicLayout />,
-    hydrateFallbackElement: <PageSkeleton />,
+    // la primera carga queda bajo la pantalla de entrada: basta un marcador de altura completa
+    hydrateFallbackElement: <div style={{ minHeight: '100svh' }} aria-busy="true" />,
     children: [
       { path: '/', lazy: page(() => import('./pages/home/Home')) },
       { path: '/menu', lazy: page(() => import('./pages/menu/MenuPage')) },
