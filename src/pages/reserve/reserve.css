@@ -1205,3 +1205,7 @@
     border-radius: 60px 0 0 0;
   }
 }
+
+.wizard-notice {
+  margin-bottom: 20px;
+}

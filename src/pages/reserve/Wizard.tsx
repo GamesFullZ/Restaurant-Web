@@ -10,7 +10,7 @@ import { cx } from '@/lib/cx';
 import { Dialog } from '@/components/Dialog';
 import { formatPhone, normalizePhone } from '@/domain/validation';
 import { occasionLabel, partyLabel } from '@/domain/reservations';
-import { firstInvalid, reconcileTable, STEPS, stepValid, type Ctx, type Draft } from './draft';
+import { firstInvalid, reconcileTable, sameAsOriginal, STEPS, stepValid, type Ctx, type Draft } from './draft';
 import { StepData, StepDate, StepOccasion, StepParty, StepSlot, StepTable } from './steps';
 import './reserve.css';
 
@@ -239,6 +239,7 @@ export function Wizard({ mode, initial, original, onChange, onSubmit, onExit, hi
   };
 
   const valid = stepValid(step, d, ctx);
+  const unchanged = mode === 'edit' && !!original && sameAsOriginal(d, original);
   const stepProps = { d, set, ctx, mode, goTo, advance, notice, clearNotice: () => setNotice(null), showErrors, hint };
 
   return (
@@ -282,6 +283,12 @@ export function Wizard({ mode, initial, original, onChange, onSubmit, onExit, hi
             <h2 id="step-title" ref={titleRef} tabIndex={-1} className="step-title">
               {meta.title}
             </h2>
+            {notice && step !== 4 && (
+              <div className="alert alert--soft wizard-notice" role="status">
+                <AlertTriangle aria-hidden />
+                <p className="alert__title">{notice}</p>
+              </div>
+            )}
             {step === 1 && <StepParty {...stepProps} />}
             {step === 2 && <StepSlot {...stepProps} />}
             {step === 3 && <StepDate {...stepProps} notice={dateNotice} />}
@@ -360,13 +367,14 @@ export function Wizard({ mode, initial, original, onChange, onSubmit, onExit, hi
             <ArrowLeft aria-hidden /> {step === 1 ? 'Salir' : 'Atrás'}
           </button>
           {!valid && step !== 7 && <p className="flow-bar__why">{HELP_DISABLED[step]}</p>}
+          {step === 7 && unchanged && <p className="flow-bar__why">Aún no hay cambios: edita el dato que quieras cambiar.</p>}
           {step < 7 ? (
             <button className={cx('btn btn--primary', !valid && 'is-soft')} onClick={next} aria-disabled={!valid && step !== 6 && step !== 5}>
               {step === 4 && d.tableId ? `Continuar con ${TABLE_BY_ID[d.tableId].name}` : step === 6 ? 'Revisar reserva' : 'Continuar'}
               <ArrowRight className="arrow" aria-hidden />
             </button>
           ) : (
-            <button className="btn btn--primary btn--lg" onClick={submit} disabled={busy || !valid}>
+            <button className="btn btn--primary btn--lg" onClick={submit} disabled={busy || !valid || unchanged}>
               {busy ? (
                 <>
                   <span className="spinner" aria-hidden /> {mode === 'edit' ? 'Guardando…' : 'Confirmando…'}

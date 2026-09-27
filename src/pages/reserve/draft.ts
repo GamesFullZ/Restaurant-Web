@@ -49,9 +49,10 @@ export function emptyDraft(): Draft {
   };
 }
 
+/** Modo edición: abre en el resumen para saltar directo al paso que se quiere cambiar (UF-08). */
 export function draftFromReservation(r: Reservation): Draft {
   return {
-    step: 1,
+    step: 7,
     maxStep: 7,
     party: r.party,
     slot: r.slot,
@@ -140,4 +141,21 @@ export function reconcileTable(d: Draft, ctx: Ctx): { draft: Draft; notice: stri
     if (st.state !== 'Disponible') return { draft: { ...d, tableId: null }, notice: 'Tu mesa ya no está disponible en este horario. Elige otra.' };
   }
   return { draft: d, notice: null };
+}
+
+/** EC-47: en modo edición, sin cambios respecto a la reserva original no se puede guardar. */
+export function sameAsOriginal(d: Draft, o: Reservation): boolean {
+  const opt = (v?: string | null) => (v ?? '').trim();
+  return (
+    d.party === o.party &&
+    d.slot === o.slot &&
+    d.date === o.date &&
+    d.tableId === o.tableId &&
+    d.occasion === o.occasion &&
+    opt(d.occasionOther) === opt(o.occasionOther) &&
+    opt(d.occasionNotes) === opt(o.occasionNotes) &&
+    d.name.trim() === o.name &&
+    d.phone.replace(/\D/g, '') === o.phone &&
+    opt(d.comment) === opt(o.comment)
+  );
 }

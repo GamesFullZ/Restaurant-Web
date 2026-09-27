@@ -939,6 +939,7 @@ a.kpi__link:hover {
 /* ---------------- EDITAR RESERVA */
 .redit__grid {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
 }
 @media (min-width: 1200px) {
@@ -952,10 +953,12 @@ a.kpi__link:hover {
 }
 .redit__side {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
 }
 .redit__actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: 10px;
 }

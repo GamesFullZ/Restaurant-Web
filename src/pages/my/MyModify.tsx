@@ -47,7 +47,7 @@ export default function MyModify() {
   };
 
   if (mode === 'flow' && initial) {
-    return <Wizard mode="edit" initial={{ ...initial, step: 1 }} original={r} onSubmit={save} onExit={() => setMode('choose')} />;
+    return <Wizard mode="edit" initial={initial} original={r} onSubmit={save} onExit={() => setMode('choose')} />;
   }
 
   if (mode === 'data' && initial) return <DataForm initial={initial} original={r} onSave={save} onBack={() => setMode('choose')} />;
