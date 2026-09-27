@@ -789,8 +789,8 @@
   margin-top: 3px;
   color: var(--chile);
 }
-.sum-rows li.is-empty {
-  opacity: 0.55;
+.sum-rows li.is-empty > svg {
+  opacity: 0.5;
 }
 .sum-rows li > div {
   display: grid;
@@ -866,6 +866,10 @@
     background: var(--cantera);
     position: relative;
     overflow: hidden;
+  }
+  .flow-aside__body .muted,
+  .flow-aside__body .sum-rows__label {
+    color: var(--ink-2);
   }
   .flow-aside__body::after {
     content: '';

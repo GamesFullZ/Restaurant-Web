@@ -1,8 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { buildTaco, centerOnBox } from '@/three/taco';
-import { blob, glossy, leafGeometry, phys, std } from '@/three/kit';
-import { mulberry32 } from '@/three/noise';
 import { useReducedMotion } from '@/lib/motion';
 import { cx } from '@/lib/cx';
 
@@ -11,200 +7,52 @@ export interface TacoProgress {
   p: number;
 }
 
-function webglAvailable() {
-  try {
-    const c = document.createElement('canvas');
-    return !!(c.getContext('webgl2') || c.getContext('webgl'));
-  } catch {
-    return false;
-  }
-}
-
-const smooth = (a: number, b: number, x: number) => {
-  const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
-  return t * t * (3 - 2 * t);
-};
-
 /** Taco 3D del Hero (FR-005): rota, se desplaza, cambia de escala y se “abre” en capas con el scroll. */
 export function HeroTaco({ progress, className }: { progress: React.MutableRefObject<TacoProgress>; className?: string }) {
   const wrap = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
-  const fallback = `${import.meta.env.BASE_URL}images/taco-hero.png`;
+  // Teléfonos y equipos modestos: render estático del mismo taco (sin descargar three.js).
+  const [lite] = useState(() => typeof window !== 'undefined' && (window.matchMedia('(max-width: 899px), (pointer: coarse)').matches || (navigator.hardwareConcurrency ?? 8) <= 2));
+  const fallback = `${import.meta.env.BASE_URL}images/taco-hero.webp`;
 
   useEffect(() => {
     const el = wrap.current;
-    if (!el || reduced) return;
-    if (!webglAvailable()) {
-      setFailed(true);
-      return;
-    }
-    let renderer: THREE.WebGLRenderer;
-    try {
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-    } catch {
-      setFailed(true);
-      return;
-    }
-    const lowPower = window.innerWidth < 768 || (navigator.hardwareConcurrency ?? 8) <= 4;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPower ? 1.5 : 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.0;
-    renderer.shadowMap.enabled = !lowPower;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.setClearColor(0x000000, 0);
-    el.appendChild(renderer.domElement);
-
-    const scene = new THREE.Scene();
-    const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
-    cam.position.set(0, 0.6, 6.2);
-    cam.lookAt(0, 0, 0);
-
-    const key = new THREE.DirectionalLight('#FFEBD2', 3.2);
-    key.position.set(-4, 5, 3);
-    key.castShadow = !lowPower;
-    key.shadow.mapSize.set(1024, 1024);
-    key.shadow.radius = 6;
-    scene.add(key);
-    scene.add(new THREE.HemisphereLight('#FFF5E8', '#6E5C48', 0.9));
-    const rim = new THREE.DirectionalLight('#FFD2B0', 1.4);
-    rim.position.set(4, 2, -4);
-    scene.add(rim);
-    const fillFront = new THREE.DirectionalLight('#ffffff', 0.5);
-    fillFront.position.set(0, 1, 6);
-    scene.add(fillFront);
-
-    const pivot = new THREE.Group();
-    scene.add(pivot);
-    const taco = buildTaco({ seed: 7, detail: lowPower ? 'low' : 'high' });
-    centerOnBox(taco);
-    taco.scale.setScalar(1.12);
-    pivot.add(taco);
-    const layers = ['layer-meat', 'layer-onion', 'layer-salsa', 'layer-herbs'].map((n) => taco.getObjectByName(n)!);
-
-    // ingredientes flotando alrededor
-    const r = mulberry32(99);
-    const floaters = new THREE.Group();
-    scene.add(floaters);
-    const onionMat = phys('#D8467F', { roughness: 0.25, transmission: 0.3, thickness: 0.02, clearcoat: 0.7 });
-    const pieces: { m: THREE.Object3D; base: THREE.Vector3; speed: number; phase: number; depth: number }[] = [];
-    const makers = [
-      () => new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.018, 8, 30, Math.PI * 1.1), onionMat),
-      () => new THREE.Mesh(leafGeometry(), std('#3F7A2C', 0.5, { side: THREE.DoubleSide })),
-      () => new THREE.Mesh(blob(0.06, 0.04, 0.05, 0.2, 5, 2), glossy('#7E170E', 0.15)),
-      () => new THREE.Mesh(blob(0.045, 0.035, 0.04, 0.15, 6, 2), phys('#E9B63C', { roughness: 0.35, clearcoat: 0.5 })),
-    ];
-    const n = lowPower ? 10 : 18;
-    for (let i = 0; i < n; i++) {
-      const m = makers[i % makers.length]();
-      if (i % 4 === 1) m.scale.setScalar(0.12 + r() * 0.06);
-      const a = (i / n) * Math.PI * 2 + r() * 0.4;
-      const rad = 1.9 + r() * 0.8;
-      const base = new THREE.Vector3(Math.cos(a) * rad, (r() - 0.5) * 2.2, Math.sin(a) * 0.9 - 0.3);
-      m.position.copy(base);
-      m.rotation.set(r() * 6, r() * 6, r() * 6);
-      floaters.add(m);
-      pieces.push({ m, base, speed: 0.3 + r() * 0.5, phase: r() * 6.28, depth: 0.4 + r() * 0.8 });
-    }
-
-    const catcher = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.ShadowMaterial({ opacity: 0.16 }));
-    catcher.rotation.x = -Math.PI / 2;
-    catcher.position.y = -1.25;
-    catcher.receiveShadow = true;
-    scene.add(catcher);
-    taco.traverse((o) => {
-      o.castShadow = true;
-    });
-
-    const resize = () => {
-      const w = el.clientWidth;
-      const h = el.clientHeight;
-      renderer.setSize(w, h, false);
-      renderer.domElement.style.width = `${w}px`;
-      renderer.domElement.style.height = `${h}px`;
-      cam.aspect = w / Math.max(1, h);
-      cam.position.z = w < h ? 7.4 : 6.2;
-      cam.updateProjectionMatrix();
+    if (!el || reduced || lite) return;
+    let cleanup: (() => void) | null = null;
+    let cancelled = false;
+    const start = () =>
+      import('@/three/heroScene')
+        .then(({ mountHeroTaco }) => {
+          if (cancelled) return;
+          cleanup = mountHeroTaco(el, progress, () => setReady(true));
+          if (!cleanup) setFailed(true);
+        })
+        .catch(() => setFailed(true));
+    // El render estático pinta primero; three.js se descarga y monta con la primera interacción
+    // (mover el ratón, hacer scroll, tocar o teclear), cuando el hilo principal ya está libre.
+    const events = ['pointermove', 'pointerdown', 'wheel', 'touchstart', 'keydown', 'scroll'] as const;
+    let idle = 0;
+    const kick = () => {
+      events.forEach((ev) => window.removeEventListener(ev, kick));
+      const ric = (window as any).requestIdleCallback as ((cb: () => void, o?: { timeout: number }) => number) | undefined;
+      idle = ric ? ric(() => void start(), { timeout: 600 }) : window.setTimeout(() => void start(), 50);
     };
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(el);
-
-    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-    const onMove = (e: PointerEvent) => {
-      pointer.tx = (e.clientX / window.innerWidth - 0.5) * 2;
-      pointer.ty = (e.clientY / window.innerHeight - 0.5) * 2;
-    };
-    window.addEventListener('pointermove', onMove, { passive: true });
-
-    let visible = true;
-    const io = new IntersectionObserver(([en]) => (visible = en.isIntersecting), { threshold: 0 });
-    io.observe(el);
-
-    let raf = 0;
-    let first = true;
-    const clock = new THREE.Clock();
-    let sp = 0;
-    const loop = () => {
-      raf = requestAnimationFrame(loop);
-      if (!visible && !first) return;
-      const t = clock.getElapsedTime();
-      const p = progress.current.p;
-      sp += (p - sp) * 0.12;
-      pointer.x += (pointer.tx - pointer.x) * 0.05;
-      pointer.y += (pointer.ty - pointer.y) * 0.05;
-
-      const idle = Math.sin(t * 0.8) * 0.14;
-      const e = smooth(0.35, 0.8, sp);
-      pivot.rotation.y = -0.55 + idle + sp * Math.PI * 0.9 + pointer.x * 0.25;
-      pivot.rotation.x = 0.28 - smooth(0.2, 0.7, sp) * 0.75 + pointer.y * 0.12;
-      pivot.rotation.z = 0.08 * Math.sin(t * 0.6);
-      pivot.position.y = Math.sin(t * 1.1) * 0.06 - sp * 0.2;
-      pivot.position.x = -smooth(0.25, 0.8, sp) * 0.25;
-      const s = 1 + smooth(0.1, 0.6, sp) * 0.18 - smooth(0.85, 1, sp) * 0.5;
-      pivot.scale.setScalar(s);
-      layers.forEach((l, i) => {
-        const b = l.userData.base as THREE.Vector3;
-        l.position.set(b.x, b.y + e * (0.25 + i * 0.22), b.z);
-      });
-      pieces.forEach((pc) => {
-        pc.m.position.set(
-          pc.base.x + Math.sin(t * pc.speed + pc.phase) * 0.12 - pointer.x * pc.depth * 0.3,
-          pc.base.y + Math.cos(t * pc.speed * 0.8 + pc.phase) * 0.14 - sp * pc.depth * 1.2 + pointer.y * pc.depth * 0.2,
-          pc.base.z,
-        );
-        pc.m.rotation.x += 0.004 * pc.speed;
-        pc.m.rotation.y += 0.006 * pc.speed;
-      });
-      floaters.rotation.y = sp * 0.8;
-      renderer.render(scene, cam);
-      if (first) {
-        first = false;
-        setReady(true);
-      }
-    };
-    loop();
-
+    events.forEach((ev) => window.addEventListener(ev, kick, { passive: true }));
     return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-      io.disconnect();
-      window.removeEventListener('pointermove', onMove);
-      renderer.dispose();
-      renderer.domElement.remove();
-      scene.traverse((o) => {
-        const m = o as THREE.Mesh;
-        m.geometry?.dispose?.();
-      });
+      cancelled = true;
+      events.forEach((ev) => window.removeEventListener(ev, kick));
+      (window as any).cancelIdleCallback?.(idle);
+      window.clearTimeout(idle);
+      cleanup?.();
     };
-  }, [reduced, progress]);
+  }, [reduced, lite, progress]);
 
-  const staticMode = reduced || failed;
+  const staticMode = reduced || failed || lite;
   return (
-    <div className={cx('hero-taco', className, ready && !staticMode && 'is-ready')} ref={wrap} role="img" aria-label="Taco de short rib con cebolla encurtida y salsa de chile morita, en 3D.">
-      <img src={fallback} alt="" aria-hidden className={cx('hero-taco__fallback', staticMode && 'is-static')} />
+    <div className={cx('hero-taco', className, ready && !staticMode && 'is-ready', lite && !reduced && 'is-lite')} ref={wrap} role="img" aria-label="Taco de short rib con cebolla encurtida y salsa de chile morita, en 3D.">
+      <img src={fallback} alt="" aria-hidden width={1400} height={1100} fetchPriority="high" decoding="async" className={cx('hero-taco__fallback', staticMode && 'is-static')} />
     </div>
   );
 }

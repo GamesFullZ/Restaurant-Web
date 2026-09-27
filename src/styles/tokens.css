@@ -8,6 +8,8 @@
   --obsidiana-3: #2e2a26;
   --chile: #c4432a;
   --chile-strong: #a8361f;
+  /* chile para texto pequeño sobre fondos claros (≥ 4.5:1 sobre nixtamal) */
+  --chile-ink: #b03a22;
   --chile-soft: #f3d9d0;
   --nopal: #2e4a3b;
   --nopal-2: #253d30;
@@ -24,7 +26,7 @@
   --line-strong: rgba(22, 20, 18, 0.28);
   --line-inv: rgba(244, 239, 230, 0.16);
 
-  --st-pending: #9a6212;
+  --st-pending: #85540f;
   --st-pending-bg: #f8ead0;
   --st-confirmed: #2e4a3b;
   --st-confirmed-bg: #dce8dc;

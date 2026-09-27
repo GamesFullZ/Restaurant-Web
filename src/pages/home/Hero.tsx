@@ -6,6 +6,7 @@ import { useReducedMotion } from '@/lib/motion';
 import { gsap, ScrollTrigger } from '@/lib/smooth';
 import { openStatus } from '@/lib/hours';
 import { useNow } from '@/lib/useNow';
+import { onSplashDone } from '@/lib/splash';
 
 function DotField() {
   // Retícula de platos y sillas vista desde arriba (capa gráfica detrás del texto)
@@ -68,7 +69,7 @@ export function Hero() {
   useLayoutEffect(() => {
     const el = section.current;
     if (!el) return;
-    el.classList.add('is-in');
+    onSplashDone(() => el.classList.add('is-in'));
     if (reduced) {
       progress.current.p = 0;
       return;
@@ -100,6 +101,13 @@ export function Hero() {
           end: 'bottom top',
           scrub: true,
           onUpdate: (s) => (progress.current.p = s.progress * 0.8),
+        });
+        gsap.to('.hero-taco.is-lite .hero-taco__fallback', {
+          rotate: 16,
+          scale: 1.12,
+          yPercent: 8,
+          ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top top', end: 'bottom top', scrub: 0.5 },
         });
       });
     }, el);

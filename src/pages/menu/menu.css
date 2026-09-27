@@ -165,7 +165,7 @@ body:has(.site-header:not(.is-hidden)) .menu-tabs {
   border-bottom: 1px solid var(--line-strong);
 }
 .menu-cat__n {
-  color: var(--chile);
+  color: var(--chile-ink);
   font-size: 0.85rem;
   padding-bottom: 12px;
 }

@@ -277,14 +277,14 @@ export default function DishEditor() {
             {e('imageAlt') && <p className="field__error">{errors.imageAlt}</p>}
           </div>
         </div>
-        <aside className="editor__preview">
+        <aside className="editor__preview" aria-label="Vista previa">
           <p className="eyebrow">Vista previa</p>
           <div className="dcard dcard--preview">
             <div className="dcard__media">
               <DishImage imageId={f.imageId} alt={f.imageAlt} name={f.name || 'Nuevo platillo'} />
             </div>
             <div className="dcard__body">
-              <h3 className="dcard__name">{f.name || 'Nombre del platillo'}</h3>
+              <p className="dcard__name">{f.name || 'Nombre del platillo'}</p>
               <span className="dcard__price tnum">{f.price ? formatPrice(Number(f.price)) : '$—'}</span>
               <p className="dcard__desc">{f.description || 'Una línea evocadora del platillo.'}</p>
               <div className="dcard__tags">

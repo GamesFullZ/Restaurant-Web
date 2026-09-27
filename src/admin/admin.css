@@ -401,14 +401,14 @@ a.kpi__link:hover {
   color: var(--ink-3);
 }
 .kpi--accent .kpi__link {
-  background: var(--chile);
+  background: var(--chile-strong);
   color: #fff8f0;
-  border-color: var(--chile);
+  border-color: var(--chile-strong);
 }
 .kpi--accent .kpi__label,
 .kpi--accent .kpi__sub,
 .kpi--accent .kpi__label svg {
-  color: rgba(255, 248, 240, 0.85);
+  color: #fff8f0;
 }
 .kpi__meter {
   height: 6px;

@@ -326,7 +326,7 @@
 }
 .cal__cell.is-sin {
   background: repeating-linear-gradient(135deg, var(--paper) 0 5px, #e6dccd 5px 7px);
-  color: var(--ink-3);
+  color: var(--ink-2);
 }
 .cal__cell.is-sin .cal__mark {
   background: var(--chile);
@@ -335,7 +335,7 @@
 }
 .cal__cell.is-cerrado {
   background: #e6dccd;
-  color: var(--ink-3);
+  color: var(--ink-2);
 }
 .cal__cell.is-cerrado .cal__mark {
   background: transparent;

@@ -141,6 +141,20 @@
 .hero-taco.is-ready .hero-taco__fallback {
   opacity: 0;
 }
+.hero-taco.is-lite .hero-taco__fallback {
+  animation: taco-float 6s ease-in-out infinite;
+}
+@keyframes taco-float {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: -2deg;
+  }
+  50% {
+    translate: 0 -10px;
+    rotate: 2deg;
+  }
+}
 .hero-card {
   position: absolute;
   z-index: 4;
@@ -422,7 +436,7 @@
   color: var(--ink-2);
 }
 .concept__n {
-  color: var(--chile);
+  color: var(--chile-ink);
   font-size: 0.85rem;
   padding-top: 8px;
 }
@@ -743,7 +757,7 @@
 .reviews__note {
   margin-top: 40px;
   font-size: 0.8rem;
-  color: rgba(244, 239, 230, 0.6);
+  color: rgba(244, 239, 230, 0.78);
 }
 
 /* ---------------- UBICACIÓN */
@@ -967,7 +981,7 @@
   font-size: 0.72em;
 }
 .cta .lead {
-  color: rgba(255, 248, 240, 0.85);
+  color: #fff8f0;
   max-width: 40ch;
 }
 .tiles {
@@ -1007,4 +1021,12 @@
     width: 180px;
     opacity: 0.35;
   }
+}
+
+/* contraste AA de las etiquetas pequeñas sobre fondos de color */
+.reviews .eyebrow.maiz {
+  color: #e6b14e;
+}
+.location .eyebrow.accent {
+  color: #8f2d18;
 }

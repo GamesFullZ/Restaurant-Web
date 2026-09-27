@@ -1,7 +1,8 @@
-import { lazy, Suspense, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, type ReactNode } from 'react';
 import { createBrowserRouter, createHashRouter, RouterProvider } from 'react-router-dom';
 import { PublicLayout } from './components/Layouts';
 import { PageSkeleton } from './components/PageSkeleton';
+import { hideSplash } from './lib/splash';
 
 const Home = lazy(() => import('./pages/home/Home'));
 const MenuPage = lazy(() => import('./pages/menu/MenuPage'));
@@ -22,7 +23,18 @@ const DishEditor = lazy(() => import('./admin/DishEditor'));
 const Trash = lazy(() => import('./admin/Trash'));
 const Tables = lazy(() => import('./admin/Tables'));
 
-const s = (el: ReactNode) => <Suspense fallback={<PageSkeleton />}>{el}</Suspense>;
+/** Se monta junto con la página ya cargada: es la señal para retirar la pantalla de entrada. */
+function SplashGate() {
+  useEffect(() => hideSplash(), []);
+  return null;
+}
+
+const s = (el: ReactNode) => (
+  <Suspense fallback={<PageSkeleton />}>
+    {el}
+    <SplashGate />
+  </Suspense>
+);
 
 const routes = [
   {

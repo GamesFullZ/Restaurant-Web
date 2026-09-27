@@ -24,6 +24,7 @@ interface Props {
 }
 
 const WEEK = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+const WEEK_FULL = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
 
 function monthStart(iso: string) {
   return iso.slice(0, 8) + '01';
@@ -110,7 +111,7 @@ export function Calendar({ today, last, selected, dayState, onSelect, loading, m
               <div className="cal__grid" role="grid" aria-label={formatMonth(m)}>
                 <div role="row" className="cal__row cal__row--head">
                   {WEEK.map((w, i) => (
-                    <span key={i} role="columnheader" className="cal__wd" aria-hidden>
+                    <span key={i} role="columnheader" className="cal__wd" aria-label={WEEK_FULL[i]}>
                       {w}
                     </span>
                   ))}
@@ -123,13 +124,12 @@ export function Calendar({ today, last, selected, dayState, onSelect, loading, m
                       const st: DayState = out ? 'fuera' : dayState(d);
                       const isSel = d === selected;
                       return (
-                        <span role="gridcell" key={d} className="cal__cellwrap">
+                        <span role="gridcell" key={d} className="cal__cellwrap" aria-selected={isSel}>
                           <button
                             data-date={d}
                             className={cx('cal__cell', `is-${st}`, isSel && 'is-selected', d === today && 'is-today', loading && 'is-loading')}
                             disabled={out}
                             tabIndex={d === focusDate ? 0 : -1}
-                            aria-selected={isSel}
                             aria-label={`${formatLong(d)}${d === today ? ', hoy' : ''}, ${DAY_LABEL[st].toLowerCase()}`}
                             onClick={() => {
                               setFocus(d);

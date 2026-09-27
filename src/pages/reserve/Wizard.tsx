@@ -260,7 +260,7 @@ export function Wizard({ mode, initial, original, onChange, onSubmit, onExit, hi
               const can = s.n <= d.maxStep && s.n !== step;
               return (
                 <li key={s.n} className={cx('progress__item', s.n === step && 'is-current', done && 'is-done')}>
-                  <button disabled={!can} onClick={() => goTo(s.n)} aria-current={s.n === step ? 'step' : undefined}>
+                  <button disabled={!can} onClick={() => goTo(s.n)} aria-current={s.n === step ? 'step' : undefined} aria-label={`Paso ${s.n}: ${s.label}`}>
                     <span className="progress__bar" aria-hidden />
                     <span className="progress__label">
                       <span className="mono">{String(s.n).padStart(2, '0')}</span> {s.label}

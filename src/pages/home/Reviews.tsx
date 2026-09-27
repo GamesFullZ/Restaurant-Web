@@ -10,7 +10,12 @@ import { addDays, formatLong, toISODate } from '@/lib/dates';
 import { cx } from '@/lib/cx';
 
 type StarFilter = 'all' | 5 | 4 | 3;
-const AVATAR_BG = ['var(--chile)', 'var(--maiz)', 'var(--cantera)', 'var(--nixtamal)'];
+const AVATAR_STYLE = [
+  { background: 'var(--nopal)', color: 'var(--nixtamal)' },
+  { background: 'var(--maiz)' },
+  { background: 'var(--cantera)' },
+  { background: 'var(--nixtamal)' },
+];
 
 export function Reviews() {
   const [stars, setStars] = useState<StarFilter>('all');
@@ -114,7 +119,7 @@ export function Reviews() {
               <Quote className="review-hero__q" aria-hidden />
               <blockquote className="review-hero__text serif-i">“{current.comment}”</blockquote>
               <footer className="review-hero__who">
-                <span className="avatar" style={{ background: AVATAR_BG[REVIEWS.indexOf(current) % 4] }} aria-hidden>
+                <span className="avatar" style={AVATAR_STYLE[REVIEWS.indexOf(current) % 4]} aria-hidden>
                   {current.initials}
                 </span>
                 <div>
@@ -138,7 +143,7 @@ export function Reviews() {
                         setIndex(i);
                       }}
                     >
-                      <span className="avatar avatar--sm" style={{ background: AVATAR_BG[REVIEWS.indexOf(r) % 4] }} aria-hidden>
+                      <span className="avatar avatar--sm" style={AVATAR_STYLE[REVIEWS.indexOf(r) % 4]} aria-hidden>
                         {r.initials}
                       </span>
                       <span className="rmini__txt">

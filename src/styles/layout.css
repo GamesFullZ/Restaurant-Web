@@ -1,6 +1,7 @@
 /* Header, menú móvil, footer, panel demo, avisos globales */
 .site-main {
-  min-height: 70vh;
+  min-height: 100vh;
+  min-height: 100svh;
 }
 .logo {
   display: inline-flex;

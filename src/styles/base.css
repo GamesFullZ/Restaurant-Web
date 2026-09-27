@@ -198,6 +198,12 @@ ol {
 .accent {
   color: var(--chile);
 }
+.eyebrow.accent {
+  color: var(--chile-ink);
+}
+.on-dark .eyebrow.accent {
+  color: #ec8a72;
+}
 
 /* ---------- botones */
 .btn {
