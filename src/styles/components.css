@@ -231,7 +231,23 @@
   gap: 32px;
 }
 .cal__months--2 {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+}
+.cal__months--2 .cal__row {
+  gap: 3px;
+}
+.cal__months--2 .cal__cell {
+  min-height: 34px;
+  border-radius: 10px;
+}
+.cal__months--2 .cal__num {
+  transform: translateY(-3px);
+}
+.cal__months--2 .cal__mark {
+  bottom: 4px;
+  width: 5px;
+  height: 5px;
 }
 .cal__title {
   font-family: var(--font-display);

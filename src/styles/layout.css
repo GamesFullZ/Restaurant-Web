@@ -362,7 +362,7 @@
 .demo-trigger {
   position: fixed;
   z-index: 70;
-  left: 16px;
+  right: 16px;
   bottom: calc(16px + env(safe-area-inset-bottom));
   display: inline-flex;
   align-items: center;
@@ -391,8 +391,15 @@
   opacity: 0;
   pointer-events: none;
 }
+.demo-trigger:where(body:has(.flow-bar) *) {
+  bottom: calc(92px + env(safe-area-inset-bottom));
+}
+@media (max-width: 1099px) {
+  .demo-trigger:where(body:has(.flow-aside) *) {
+    bottom: calc(172px + env(safe-area-inset-bottom));
+  }
+}
 .demo-trigger--admin {
-  left: auto;
   right: 16px;
 }
 @media (max-width: 640px) {

@@ -1,5 +1,6 @@
 /* ---------------- FLUJO DE RESERVA */
 .flow {
+  overflow-x: clip;
   padding-top: var(--header-h);
   min-height: 100vh;
   background: var(--nixtamal);
@@ -461,6 +462,7 @@
 /* mesa */
 .table-tools {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
 .table-prefs {
@@ -489,6 +491,7 @@
 }
 .table-layout {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
 }
 @media (min-width: 1300px) {
